@@ -1,0 +1,45 @@
+@font-face{
+    font-family : "PrivateWriter";
+    src : url("../font/PiratesWriters.ttf");
+}
+
+html{
+    font-family : PrivateWriter;
+}
+#map{
+    background : url("../img/background.png");
+    width : 384px;
+    height : 384px;
+    position : relative;
+    
+}
+#scoreOutput{
+    font-size : 20px;
+    text-align:  center;
+    position : absolute;
+    bottom : 50%;
+}
+ #bold{
+    font-size : 59px;
+    
+    
+}
+#score{
+    float : left;
+    width : 384px;
+    height : 384px;
+    background : url("../img/background.png");
+    position : relative;
+}
+
+.cell{
+    display : block;
+    width : 64px;
+    height : 64px;
+    position : absolute;
+    
+}
+
+img{
+        transition : all 1s ease !important ;
+}

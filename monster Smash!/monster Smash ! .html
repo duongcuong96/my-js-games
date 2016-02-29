@@ -1,0 +1,240 @@
+<!Doctype HTML>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Monster Smash Animation</title>
+    <script src='jquery.js'></script>
+    <style>
+/*
+        #gameState{
+            position : relative;
+           width : 896;
+            height : 896px;
+
+        }
+*/
+/*
+        canvas{
+            display: block;
+            position : absolute;
+            border : 1px solid red;
+        }
+        */ 
+        
+        @font-face{
+            font-family : "PrivateWriter";
+            src : url("PiratesWriters.ttf");
+        }
+        
+        #gameInfo{
+            border: 1px solid gray;
+            width : 100%;
+            height: auto;
+        }
+        #score,#time,#gameInfo{
+            font-family: PrivateWriter;
+            font-size : 30px;
+            
+        }
+        #score{
+            float : left ;
+            text-align : center;
+        }
+        #time{
+            float :right;
+            text-align: right;
+        }
+    </style>
+</head>
+
+<body >
+    <div id='gameState'>
+    </div>
+    <div id='gameInfo'>
+         <span id='score'></span>
+        <span id='time'></span>
+    </div>
+    <script>
+        var ROWS = 5;
+        var COLUMNS = 8;
+        var SIZE = 128;
+        var SPACE = 10;
+        var score= 0 ;
+        var timeOver = 10;
+//        gia tri de nam giu mang 
+        var monsterObjectArray = [];
+        var monsterCanvasArray = [];
+        var monsterGetContextArray = [];
+        var gameState = document.querySelector("#gameState");
+        var scoreField = document.querySelector("#gameInfo #score"); 
+        var timeField = document.querySelector("#gameInfo #time");
+        var monsterObject = {
+            image : "monsterTileSheet.png",
+            forward: true,
+            column : 3,
+            numberOfFrames : 5,
+            currentFrame : 0,
+            size : 128,
+            sourceX : 0,
+            sourceY : 0,
+            hit : 2,//
+            hiding : 0, //
+            jumping : 1, //
+            state : this.hiding, //
+            timeToDisplayHit : 0,
+            timeToRemoveHit : 10, 
+            // chua random Time :
+            waitTime : undefined, //
+            
+            findWaitTime : function(){
+                this.waitTime = Math.ceil(Math.random() * 10);
+             
+
+            },
+           updateAnimation : function(){
+            if(this.state !== this.hit ){
+                if(this.waitTime > 0 || this.waitTime == undefined){
+                    this.state = this.hiding;
+                }else{
+                    this.state = this.jumping;
+                }
+            }
+               
+                switch(this.state){
+                        
+                    case this.hiding:
+                        this.currentFrame = 0;
+                        this.waitTime--;
+//                        console.log(this.waitTime);
+                        break;
+                        
+                    case this.jumping :
+                        if(this.currentFrame === this.numberOfFrames){
+                            this.forward = false;
+                        }
+                        if(this.currentFrame === 0 && this.forward == false){
+                            this.forward = true;
+                            this.findWaitTime();
+                            break;
+                        }
+                        
+
+                        
+                        if(this.forward){
+                            this.currentFrame++;
+                        }else{
+                            this.currentFrame--;
+                        }
+                }//end switch 
+               
+               if(this.state == this.hit){
+                this.timeToDisplayHit++;
+                this.currentFrame = 6;
+                    if(this.timeToDisplayHit == this.timeToRemoveHit){
+                        //reset lai timedisplay :
+                            this.timeToDisplayHit = 0;
+                            this.currentFrame = 0;
+                            this.state = this.hiding;
+                    }
+               }
+               this.sourceX = Math.floor(this.currentFrame % this.column)*this.size;
+               this.sourceY = Math.floor(this.currentFrame / this.column)*this.size;
+               
+           }
+
+        }//end monster Object
+
+        
+        var monsterImage = new Image();
+        monsterImage.src = monsterObject.image;
+        
+
+        
+        function updateAnimation(){
+            window.setTimeout(updateAnimation,100);
+            for(i=0;i<monsterObjectArray.length;i++){
+                monsterObjectArray[i].updateAnimation();//update animation cho tung monster Object ! 
+            }
+            render();
+        }//end UpdateAnimation 
+        
+        
+        function render(){
+//            getContext.clearRect(0,0,canvas.width,canvas.height);
+//            getContext.drawImage(monsterImage,monsterObject.sourceX,monsterObject.sourceY,monsterObject.size,monsterObject.size,0,0,monsterObject.size,monsterObject.size)
+            for(i=0;i<monsterObjectArray.length;i++){
+                var monsterObject = monsterObjectArray[i];
+                var getContext = monsterGetContextArray[i];
+getContext.clearRect(0,0,monsterObject.size,monsterObject.size);                getContext.drawImage(monsterImage,monsterObject.sourceX,monsterObject.sourceY,monsterObject.size,monsterObject.size,0,0,monsterObject.size,monsterObject.size);
+            }
+        }//end render();
+        
+        function buildMap(){
+            for(var rows = 0 ;rows< ROWS ;rows++){
+                for(var columns = 0 ;columns < COLUMNS ; columns++){
+                    //tao 1 monsterObject moi :
+                    var newMonsterObject = Object.create(monsterObject);
+                    newMonsterObject.findWaitTime();
+                    monsterObjectArray.push(newMonsterObject) ; //nhét nó vào monsterObjectArray để có thể quản lý sau này (đã tạo ddc 12 monsterObject)
+                    //tao canvas cho monsterObject moi :
+                    var canvas = document.createElement("canvas");
+                    canvas.setAttribute("top",rows*(SIZE+SPACE)+"px");
+                    canvas.setAttribute("left",columns*(SIZE+SPACE)+"px");
+                    canvas.style.width = SIZE + "px";
+                    canvas.style.height = SIZE + "px";
+                    
+             gameState.appendChild(canvas);
+                canvas.addEventListener("mousedown",mouseDownHandler,false);//add su kien mouseDownHanlder cho canvas moi 
+                    monsterCanvasArray.push(canvas); //nhét nó vào monstercanvasARay để có thể vẽ lên và add sự kiện nhấn chuột 
+                    
+                    //tao context moi va đẩy vào monsterGetContext array !
+                    var getContext = canvas.getContext("2d");
+                    monsterGetContextArray.push(getContext);
+                    
+                }
+            }
+        }//end buildMap
+                
+        function mouseDownHandler(event){
+//                QUAN TRỌNG : TÌM canvas nào vừa được click ? 
+//                -> su dung .target 
+                var canvasWasClicked = event.target;
+          
+            for(var i =0 ; i <monsterObjectArray.length;i++){
+                if(monsterCanvasArray[i] === canvasWasClicked){
+                    if(monsterObjectArray[i].state === monsterObjectArray[i].jumping){
+                    monsterObjectArray[i].state = monsterObjectArray[i].hit;
+                    monsterObjectArray[i].findWaitTime();
+                    score++;
+                        console.log(score);
+                        updateScore()
+                }
+            }
+            }
+        }//end mouseDownHandler()
+        monsterImage.addEventListener("load",loadImageHandler,false);
+        
+        function loadImageHandler(){
+                    buildMap();
+                    updateAnimation();
+                } //end loadImageHandler()   
+        
+        function counterTime(){
+            setTimeout(counterTime,1000);
+            timeOver--;
+            timeField.innerHTML = "còn : " + timeOver + " giây";
+            if(timeOver===0){
+                alert("game over , you got :" + score +"points");
+                location.reload();
+                
+            }
+        }; //end counterTIme
+        
+        counterTime();
+        updateScore();
+        function updateScore(){
+            scoreField.innerHTML = "điểm : " +score;
+        }
+        
+    </script>
+</body>

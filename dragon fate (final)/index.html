@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+    <html>
+        <head>
+            <meta charset='utf-8'/>
+            <title>Dragon Fate 0.0.2Beta(Final Version) - Thiên mệnh con rồng ! </title>
+        </head>
+        
+        <body>
+            <script>
+                var hardMode = false;
+                var bossFireFrequency = 80;
+                var c = confirm("bạn KHÔNG muốn đánh boss khó chứ ? ");
+                        if(!c){bossFireFrequency = 40;hardMode = true}
+            </script>
+            <script>
+                alert("đầu tiên là tks bạn đã tốn thời gian chơi game này của tớ :v , vô cùng cảm ơn !  \n  \n cốt truyện đại khái là thế này : Bạn là rồng dũng sỹ , được giao nhiệm vụ bảo vệ vương quốc Rồng , sau đó thì một ngày xấu trời nọ, có 1 con trùm cùng lũ lâu nhâu của quân đoàn Trứng Thối thuộc hành tinh Trứng Luộc nổi hứng đến xâm chiếm , trải qua nhiều trận chiến cam go khốc liệt thì cả quân đội hành tinh Rồng chỉ còn mỗi mình bạn (bạn là hi vọng cuối cùng của hành tinh,CHIẾN ĐẤU BẢO VỆ THẾ GIỚI ĐI!!!! ) \n ĐẠI KHÁI LÀ CỨ ĐI LÊN ĐI XUỐNG VÀ TIÊU DIỆT HẾT LŨ QUÁI KIA , HẾT ! (CÓ BOSS NHÁ !  ) \n CỐ LÊN ! NIỀM HI VỌNG CUỐI CÙNG CỦA HÀNH TINH RỒNG ĐÁNG THƯƠNG !!!!! \n (nếu bạn đã đọc tới tận đây thì bạn cũng kiên nhẫn thật đấy :3 ) -> giờ nhấn OK để chơi nào !!! CHÚC CHIẾN THẮNG !  (lần sau ) !! \n GAME: Dragon Fate - Thiên mệnh con rồng  \n VERSION : 0.0.2-Beta (kiêm Final Version luôn) \n CREDIT :     code_Tớ\n NPC,SOUND : kiếm trên mạng \n BOSS DESIGN : em tớ \n CỐT TRUYỆN : tớ \n  lưu ý : nếu game chưa bắt đầu thì có thể các thành phần như âm thanh trong game vẫn chưa được load xong ! chịu khó đợi nhé ! :) ");
+            </script>
+            
+            <audio id='backgroundSound'>
+                <source src='sounds/copycat%20.mp3' type='audio/mpeg' loop autoplay>
+            </audio>
+            
+            <audio id='fireSound'>
+                <source src='sounds/fireSound.mp3' type='audio/mpeg' >
+            </audio>
+            
+            <audio id="explodeSound">
+                <source src='sounds/explode.mp3' type='audio/mpeg'>
+            </audio>
+            
+            <canvas width='1120' height='500' style='border : 1px solid black;background-color : white'></canvas>
+            <script src="js/requestAnimationFramePolyfill.js"></script>
+            <script src='js/collision.js'></script>
+            <script src='js/dragon.js'></script>
+        </body>
+</html>

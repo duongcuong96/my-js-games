@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<meta charset='utf-8' />
+<title>space Invander</title>
+<style>
+    html{
+        background : #00B;
+    }
+    #gameFrame{
+        width : 300px;
+        height :300px;
+        position : relative;
+        border : 1px solid gray;
+        margin : 0 auto;
+        
+    }
+    
+    
+    #background{
+        background : url("img/background.png") no-repeat;
+        position : absolute;
+        bottom : 0px;
+        left : 0px;
+        width : 300px;
+        height : 300px;
+    }
+
+    #alien{
+        background  : url("img/alien.png") ;
+        position : absolute;
+        top : 20px;
+        left : 80px;
+        width : 20px;
+        height : 20px;
+        transition : all 1.5s ease;
+    }
+    
+    #cannon{
+        background : url("img/cannon.png");
+        bottom : 9px;
+        left : 124px;
+        position : absolute;
+        width : 20px;
+        height : 20px;
+        transition : all 1.5s ease;
+    }
+    
+    #missile{
+        background : url("img/missile.png");
+        bottom : 60px;
+        left : 150px;
+        position : absolute;
+        width : 10px;
+        height: 10px;
+        transition : all 1.5s ease;
+    }
+    
+    #alienDie{
+        background : url("img/alienDie.png");
+        display : none;
+        position : absolute;
+        width : 20px;
+        height : 20px;
+        
+    }
+    
+    #gameBG {
+        width : auto;
+        height : 350px;
+        margin : 0 auto;
+        float : left ;
+        border : 2px solid white;
+      
+        
+        
+    }
+    #inputField{
+              margin-top : 10px;
+    }
+</style>
+
+<body id="gameBG">
+    <div id='gameFrame' >
+        <div id='background'>
+        </div>
+        
+        <div id='alien'>
+        </div>
+        
+        <div id='cannon'>
+        </div>
+        
+        <div id='missile'>
+        </div>
+        
+        <div id='alienDie'>
+        </div>
+    </div>
+    
+    <div id="inputField">
+        <input type='text' id="X" placeholder="trục X"/>
+        <input type='text' id="Y" placeholder='trục Y ' />
+        <button id="submit">Bắn!</button>
+        <p id='output' ></p>
+    </div>
+    
+    <script>
+    window.addEventListener("load",onLoadFX,false);
+    
+    function onLoadFX(){
+                //gia tri cua game :
+        var $alienY = 20;
+        var $alienX = 20;
+        var $guessX = 80;
+        var $guessY = 0;
+        var shotRemaning = 1;
+        var shotMade = 0;
+        var gameState = "";
+        var gameWon = false;
+        
+        //game object 
+        var alien = document.querySelector("#alien");
+        var cannon = document.querySelector("#cannon");
+        var missile = document.querySelector("#missile");
+        var alienDie = document.querySelector("#alienDie");
+        
+        //input và output 
+        var inputX = document.querySelector("#X");
+        var inputY = document.querySelector("#Y");
+        var output = document.querySelector("#output");
+        
+        
+        //button :
+        var button = document.querySelector("#submit");
+        button.style.cursor = "pointer";
+        button.addEventListener("click",clickHandler,false);
+        
+        function clickHandler(){
+            playGame();
+            renderGraphic();
+        }
+        
+        function playGame(){
+            shotRemaning--;
+            shotMade++;
+            gameState = "Shots : " + shotMade + " , Remaning : "  + shotRemaning;
+
+            $guessX = parseInt(inputX.value);
+            $guessY = parseInt(inputY.value);
+            console.log("doan vi tri cua X : " +$guessX);
+            console.log("doan vi tri cua Y : " +$guessY);
+
+                if($guessX >= $alienX && $guessX < ($alienX + 20)){
+                    console.log("gan  X ");
+                    if( 300-$guessY  >= $alienY && (300-$guessY) < ($alienY + 20)) {
+                        console.log("gan  Y");
+                        console.log("you win")
+                        gameWon = true;
+                        alert("con alien xấu xí đã bị nướng thành mực khô , chúc mừng bạn đã bảo quản được trái đất :3 ")
+//                        endGame();
+                    }
+                }
+
+                if(!gameWon){
+                    //update alien X position :
+//                    $alienX = Math.floor(Math.random() * 281) ; // vi alien co 20px nen chi cho < 280 px de ko bi ra ngoai man hinh
+                    $alienX = 20 ; // vi alien co 20px nen chi cho < 280 px de ko bi ra ngoai man hinh
+
+//                    $alienY +=30; //-> co 8 - 9 lan mang thi cham vao trai dat 
+                    $alienY =30; //-> co 8 - 9 lan mang thi cham vao trai dat 
+                    console.log($alienX,$alienY);
+                }
+        }//end playGame();
+        
+        function renderGraphic(){
+                //di chuyen alien
+                alien.style.left = $alienX + "px";
+                alien.style.bottom = $alienY + "px";
+                
+                // di chuyen cannon :
+                cannon.style.left = $guessX + "px";
+                
+                //di chuyen ten lua :
+                
+                missile.style.left = $guessX + "px";
+                missile.style.bottom = $guessY + "px";
+                
+                //check neu gameWon = true => cho no alien 
+                if(gameWon){
+                alien.style.display = "none";
+                missile.style.display = "none";
+                alienDie.style.bottom = $guessY + "px";
+                alienDie.style.left = $guessX + "px";
+                alienDie.style.display = "block";
+                }
+            }//end renderGraphic();
+        
+    }//end document.ready (window.load)
+</script>
+
+</body>
+</html>
